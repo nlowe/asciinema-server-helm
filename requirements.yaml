@@ -1,0 +1,9 @@
+dependencies:
+  - name: postgresql
+    version: 3.14.3
+    repository: https://charts.bitnami.com
+    condition: postgresql.enabled,global.postgresql.enabled
+  - name: redis
+    version: 6.4.2
+    repository: https://charts.bitnami.com
+    condition: redis.enabled,global.redis.enabled

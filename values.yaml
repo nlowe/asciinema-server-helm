@@ -1,0 +1,93 @@
+# Default values for asciinema-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# As far as I can tell, this service cannot run multiple instances
+# replicaCount: 1
+
+image:
+  repository: asciinema/asciinema-server
+  tag: latest
+  pullPolicy: Always
+
+server:
+  secretKeyBase: ""
+  archiveAnonymousAfterDays: 7
+
+persistence:
+  enabled: true
+
+email:
+  image:
+    repository: namshi/smtp
+    tag: latest
+    pullPolicy: Always
+  relay:
+    host: relay.mydomain.net
+    cidr: 10.0.0.0/8
+    aliases:
+      - "*.mydomain.net"
+  from: admin@asciinema.mydomain.net
+  replyTo: admin@asciinema.mydomain.net
+  resources:
+    limits:
+      cpu: 256m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64m
+
+postgresql:
+  enabled: true
+  persistence:
+    existingClaim: postgres
+  image:
+    tag: "10.7.0-debian-9-r19"
+  postgresqlDatabase: asciinema
+  postgresqlUsername: asciinema
+  postgresqlPassword: asciinema
+
+redis:
+  enabled: true
+  master:
+    persistence:
+      enabled: false
+  slave:
+    persistence:
+      enabled: false
+  usePassword: false
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - asciinema.mydomain.net
+  tls: {}
+  # tls:
+  #   - secretName: my-secret
+  #     hosts:
+  #       - asciinema.mydomain.net
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

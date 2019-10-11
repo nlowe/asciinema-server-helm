@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "asciinema-server.fullname" . }}-smtp
+  labels:
+    app.kubernetes.io/name: {{ include "asciinema-server.name" . }}
+    helm.sh/chart: {{ include "asciinema-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  RELAY_NETWORKS: ":{{ .Values.email.relay.cidr }}"
+  MAILNAME: {{ index .Values.ingress.hosts 0 | quote }}
+  SMARTHOST_ADDRESS: {{ .Values.email.relay.host | quote }}
+  SMARTHOST_PORT:  "25"
+  SMARTHOST_ALIASES: {{ .Values.email.relay.aliases | join "," | quote }}
+  SMTP_FROM_ADDRESS: {{ .Values.email.from | quote }}
+  SMTP_TO_ADDRESS: {{ .Values.email.replyTo | quote }}
